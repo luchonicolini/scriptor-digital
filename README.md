@@ -1,100 +1,113 @@
 # Scriptor Digital
 
-Sitio institucional de **Scriptor Digital**, una consultora que combina orientación académica y desarrollo de soluciones digitales para profesionales e instituciones.
+> **English:** An institutional website for academic guidance and digital development services. Built with Next.js and TypeScript, with service-specific routes, validated contact forms and server-side email delivery.
 
-[Ver sitio en producción](https://scriptordigital.vercel.app/) · [Contacto](https://scriptordigital.vercel.app/contacto) · [Reportar un problema](https://github.com/luchonicolini/PROYECTO-SCRIPTORDIGITAL/issues)
+[Ver demo](https://scriptordigital.vercel.app/) · [Reportar un problema](https://github.com/luchonicolini/scriptor-digital/issues)
 
-## Sobre el proyecto
+El sitio organiza dos líneas de servicio que necesitan mensajes y recorridos diferentes: orientación académica y desarrollo de soluciones digitales.
+Presenta la propuesta, las páginas de servicio y un formulario que permite convertir una consulta en un contacto por correo.
 
-La aplicación presenta dos líneas de servicio claramente diferenciadas:
+**Estado:** sitio con URL pública. Su presencia en el portafolio no acredita por sí sola una relación laboral ni métricas comerciales.
 
-- **Orientación académica:** metodología, planificación, revisión y preparación de defensas, preservando siempre la autoría de cada persona.
-- **Web y aplicaciones:** diseño y desarrollo de productos digitales, automatizaciones y herramientas de gestión orientadas a ventas y crecimiento.
+## Vista previa
 
-La experiencia fue diseñada con una dirección visual editorial, navegación responsive, tema claro/oscuro y recorridos específicos para cada tipo de necesidad.
+[COMPLETAR: captura de la portada y del formulario de contacto en escritorio y móvil]
 
 ## Funcionalidades
 
-- Portada orientada a conversión con dos rutas de servicio.
-- Páginas independientes para servicios, casos, equipo y contacto.
-- Tema claro y oscuro con contraste accesible.
-- Formulario validado en cliente y servidor.
+- Rutas para orientación académica, soluciones tecnológicas, casos, equipo y contacto.
+- Tema claro y oscuro; interfaz adaptable.
+- Formulario con validación en cliente y servidor.
 - Envío de consultas mediante Resend.
 - Notificación interna opcional por WhatsApp mediante CallMeBot.
-- Estados de éxito, error y funciones próximas claramente comunicados.
-- Sitemap, robots, metadatos Open Graph y datos estructurados.
-- Encabezados de seguridad y analítica con Vercel Analytics.
+- Metadatos, sitemap, robots y datos estructurados.
+- Páginas de privacidad y términos.
 
-## Tecnologías
+## Stack y arquitectura
 
-| Área | Herramientas |
+| Área | Implementación |
 | --- | --- |
-| Framework | Next.js 16, App Router y React 19 |
-| Lenguaje | TypeScript |
-| Estilos | Tailwind CSS 4 |
-| Interfaz | Radix UI y Lucide React |
-| Animaciones | Framer Motion |
+| Aplicación | Next.js 16, App Router, React 19 y TypeScript |
+| Estilos e interacción | Tailwind CSS 4, Radix UI y Framer Motion |
 | Formularios | React Hook Form y Zod |
-| Email | Resend |
-| Despliegue | Vercel |
+| Servidor | Server Action para validar y enviar consultas |
+| Integraciones | Resend, CallMeBot opcional y Vercel Analytics |
+| Calidad disponible | ESLint y compilación de Next.js; sin suite automatizada propia |
 
-## Rutas principales
+El esquema compartido de contacto mantiene las reglas de validación en `lib/contact-schema.ts`.
+La acción de servidor comprueba los datos y las credenciales antes de solicitar el envío;
+el fallo de una notificación de WhatsApp no descarta un correo enviado correctamente.
 
-| Ruta | Contenido |
+| Ubicación | Responsabilidad |
 | --- | --- |
-| `/` | Presentación general y propuesta de valor |
-| `/asesoria-academica` | Servicios de orientación académica |
-| `/soluciones-tecnologicas` | Desarrollo web, móvil y automatización |
-| `/casos` | Escenarios representativos de trabajo |
-| `/nosotros` | Equipo y enfoque profesional |
-| `/contacto` | Canales de contacto y formulario |
-| `/privacy` | Política de privacidad |
-| `/terms` | Términos de uso |
+| `app/` | Rutas, layout, metadatos y acción de contacto |
+| `components/` | Secciones y componentes compartidos |
+| `components/ui/` | Primitivas de interfaz |
+| `lib/` | Esquemas, datos y utilidades |
+| `public/` | Recursos estáticos |
 
-## Comandos
+## Cómo ejecutarlo
 
-| Comando | Descripción |
-| --- | --- |
-| `npm run dev` | Inicia el servidor de desarrollo |
-| `npm run lint` | Ejecuta ESLint |
-| `npm run build` | Genera y valida la compilación de producción |
-| `npm run start` | Ejecuta una compilación de producción |
+1. Instalá Node.js 20.9 o posterior y npm.
+2. Cloná el repo e instalá sus dependencias:
 
-## Estructura
+   ```bash
+   git clone https://github.com/luchonicolini/scriptor-digital.git
+   cd scriptor-digital
+   npm ci
+   cp .env.example .env.local
+   ```
 
-```text
-app/                     Rutas, layouts, acciones del servidor y metadatos
-components/              Componentes compartidos y secciones de la interfaz
-components/ui/           Primitivas reutilizables de la interfaz
-lib/                     Datos, esquemas y utilidades
-public/                  Imágenes y recursos estáticos
-```
+3. Ajustá `.env.local` según el entorno:
 
-## Calidad y seguridad
+   | Variable | Uso |
+   | --- | --- |
+   | `NEXT_PUBLIC_SITE_URL` | URL canónica; para desarrollo podés usar `http://localhost:3000` |
+   | `RESEND_API_KEY` | Clave privada necesaria para enviar correos reales |
+   | `WHATSAPP_PHONE_NUMBER` | Número de la notificación opcional |
+   | `WHATSAPP_API_KEY` | Clave privada de CallMeBot; opcional junto con el número |
 
-Antes de abrir un pull request:
+   Los valores de `.env.example` son ejemplos. Sin una clave válida de Resend, el sitio se puede recorrer,
+   pero el formulario no entregará correos. Dejá vacías las variables de WhatsApp si no vas a usarlo.
+   Antes de probar envíos reales, revisá el remitente y destinatario de `app/actions.ts`.
+
+4. Iniciá la aplicación:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Abrí [localhost:3000](http://localhost:3000).
+
+## Verificación
 
 ```bash
 npm run lint
 npm run build
+npm run start
 ```
 
-Los datos del formulario se validan en cliente y servidor. Las credenciales se utilizan únicamente en el servidor y deben almacenarse como variables de entorno. Consulta [SECURITY.md](SECURITY.md) para informar vulnerabilidades.
+Estos comandos analizan y compilan; no equivalen a tests de entrega de correo ni a pruebas de accesibilidad.
+Las credenciales de proveedores deben permanecer en el servidor.
+No hay un workflow de CI ni tests unitarios añadidos en este PR de documentación.
 
-## Despliegue
+## Próximos pasos
 
-La rama `main` se despliega automáticamente en Vercel. La URL canónica de producción es:
+- Agregar pruebas del esquema de contacto y de los resultados de la acción de servidor.
+- Verificar estados de error, teclado y lector de pantalla en formularios.
+- Documentar la configuración del proveedor y dominio de correo para cada entorno.
+- Registrar casos y resultados comerciales solo cuando exista evidencia verificable.
 
-<https://scriptordigital.vercel.app/>
+## Colaboración y derechos de uso
 
-## Colaboración
+Consultá [CONTRIBUTING.md](CONTRIBUTING.md) y [SECURITY.md](SECURITY.md).
+Este repositorio contiene un sitio comercial: no se concede permiso de reutilización,
+redistribución o explotación comercial sin autorización expresa de sus titulares.
 
-Las pautas para proponer cambios se encuentran en [CONTRIBUTING.md](CONTRIBUTING.md).
+## Pendientes de presentación
 
-## Derechos de uso
+- [COMPLETAR: captura de la portada y del formulario de contacto en escritorio y móvil]
 
-Este repositorio contiene el código de un sitio comercial de Scriptor Digital. No se concede permiso de reutilización, redistribución o explotación comercial sin autorización expresa de sus titulares.
+## Autor
 
----
-
-Desarrollado y mantenido por [Luciano Nicolini](https://github.com/luchonicolini) para Scriptor Digital.
+[Luciano Nicolini](https://github.com/luchonicolini) · iOS Developer (Swift, SwiftUI), con experiencia full stack en proyectos con Next.js y Supabase.
